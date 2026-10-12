@@ -11,6 +11,8 @@ app.use(express.json());
 // Fixed (REAL-1): parameterised query — input can no longer change the SQL.
 app.post('/login', (req, res) => {
   const { email, password } = req.body ?? {};
+  if (typeof email !== 'string' || typeof password !== 'string')
+    return res.status(400).json({ ok: false, error: 'email and password are required' });
   const row = db
     .prepare('SELECT email FROM users WHERE email = ? AND password = ?')
     .get(String(email ?? ''), String(password ?? ''));

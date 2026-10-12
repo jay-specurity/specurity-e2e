@@ -8,12 +8,12 @@ db.exec("CREATE TABLE users (email TEXT, password TEXT); INSERT INTO users VALUE
 const app = express();
 app.use(express.json());
 
-// VULNERABLE: user input concatenated into SQL (CWE-89). `' OR 1=1 --` signs in without a password.
+// Fixed (REAL-1): parameterised query — input can no longer change the SQL.
 app.post('/login', (req, res) => {
   const { email, password } = req.body ?? {};
   const row = db
-    .prepare(`SELECT email FROM users WHERE email = '${email}' AND password = '${password}'`)
-    .get();
+    .prepare('SELECT email FROM users WHERE email = ? AND password = ?')
+    .get(String(email ?? ''), String(password ?? ''));
   return row ? res.json({ ok: true, user: row.email }) : res.status(401).json({ ok: false });
 });
 

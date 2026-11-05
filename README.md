@@ -13,3 +13,6 @@ and re-tests after a fix. **Demo only — fake data, never deploy anywhere real.
 | `GET /health` | Health check |
 
 Run: `npm install && npm start` (port 3000), or `docker build -t acme-shop . && docker run -p 3000:3000 acme-shop`.
+
+
+

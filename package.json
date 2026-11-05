@@ -4,6 +4,12 @@
   "version": "0.0.1",
   "description": "Deliberately vulnerable demo target for Specurity E2E tests",
   "main": "src/server.js",
-  "scripts": { "start": "node src/server.js" },
-  "dependencies": { "better-sqlite3": "^11.0.0", "express": "^4.19.2" }
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "express": "^4.19.2"
+  }
 }

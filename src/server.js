@@ -32,17 +32,23 @@ app.post('/login', (req, res) => {
 });
 
 // Product search for the storefront: name or description contains the text.
+// Fixed (GA-6): the text is passed as a bound value, never pasted into the SQL. `%`, `_` and `\` in it are escaped,
+// so they match themselves instead of acting as LIKE wildcards.
+const searchProducts = db.prepare(
+  `SELECT id, name, price FROM products
+   WHERE name LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\'
+   ORDER BY name`,
+);
+const likePattern = (text) => `%${text.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+
 app.get('/api/products', (req, res) => {
-  const search = String(req.query.search ?? '');
+  const search = String(req.query.search ?? '').slice(0, 100);
   try {
-    const rows = db
-      .prepare(
-        `SELECT id, name, price FROM products WHERE name LIKE '%${search}%' OR description LIKE '%${search}%' ORDER BY name`,
-      )
-      .all();
-    res.json({ products: rows });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const pattern = likePattern(search);
+    res.json({ products: searchProducts.all(pattern, pattern) });
+  } catch {
+    // never echo database errors to the caller
+    res.status(500).json({ error: 'search failed' });
   }
 });
 
@@ -53,4 +59,6 @@ app.get('/api/products/:id', (req, res) => {
   return row ? res.json(row) : res.status(404).json({ error: 'not found' });
 });
 
-app.listen(process.env.PORT ?? 3000);
+if (require.main === module) app.listen(process.env.PORT ?? 3000);
+
+module.exports = { app };

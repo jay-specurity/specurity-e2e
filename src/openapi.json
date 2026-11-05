@@ -1,0 +1,40 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "Acme Shop API", "version": "1.0.0" },
+  "paths": {
+    "/api/products": {
+      "get": {
+        "summary": "Search products by name or description",
+        "parameters": [
+          { "name": "search", "in": "query", "required": false, "schema": { "type": "string" }, "example": "lamp" }
+        ],
+        "responses": { "200": { "description": "Matching products" } }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "summary": "One product",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }],
+        "responses": { "200": { "description": "The product" }, "404": { "description": "Unknown product" } }
+      }
+    },
+    "/login": {
+      "post": {
+        "summary": "Sign in",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "email": { "type": "string" }, "password": { "type": "string" } },
+                "required": ["email", "password"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Signed in" }, "401": { "description": "Wrong email or password" } }
+      }
+    },
+    "/health": { "get": { "summary": "Health check", "responses": { "200": { "description": "Up" } } } }
+  }
+}

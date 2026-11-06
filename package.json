@@ -1,7 +1,7 @@
 {
   "name": "specurity-e2e",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Deliberately vulnerable demo target for Specurity E2E tests",
   "main": "src/server.js",
   "scripts": {
